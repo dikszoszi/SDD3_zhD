@@ -9,10 +9,12 @@
     {
         public static string PropToString(object obj)
         {
+            if (obj is null) throw new ArgumentNullException(nameof(obj));
             string output = string.Empty;
-            IEnumerable<PropertyInfo> propertyInfos = obj.GetType().GetProperties()
-                .Where(pinfo => pinfo.GetCustomAttributes(typeof(ImportantPropertyAttribute), false).Length > 0);
-            foreach (PropertyInfo propInfo in propertyInfos)
+            foreach (PropertyInfo propInfo in
+                from pinfo in obj.GetType().GetProperties()
+                where pinfo.GetCustomAttributes(typeof(ImportantPropertyAttribute), false).Length > 0
+                select pinfo)
             {
                 output += propInfo.Name + " = " + propInfo.GetValue(obj) + " | " + propInfo.GetCustomAttribute<ImportantPropertyAttribute>().Reason;
             }
@@ -21,6 +23,11 @@
 
         public static void PrintToConsole<T>(this IEnumerable<T> input, string str = "")
         {
+            if (input is null)
+            {
+                throw new ArgumentNullException(nameof(input));
+            }
+
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine("\n\tBEGIN: " + str);
             Console.ResetColor();

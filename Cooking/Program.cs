@@ -1,4 +1,5 @@
-﻿namespace Cooking
+﻿[assembly: System.CLSCompliant(false)]
+namespace Cooking
 {
     using System;
     using System.Linq;
@@ -8,9 +9,9 @@
      * TOOLS - NuGet Package Manager - Package Manager Console
      * Scaffold-DbContext "Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\Resources\Recipes.mdf;Integrated Security=True" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Tables
      */
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main()
         {
             RecipesDbContext ctx = new RecipesDbContext();
             Fridge fridge = Fridge.GetFridgeFromXml(@"Resources\fridge.xml");
@@ -33,19 +34,20 @@
             joinedTables.GroupBy(jointype => jointype.ingredient.IngredientName)
                 .Select(grp => new { IngredientName = grp.Key, Amount = grp.Sum(jointype => jointype.ingredient.Amount) })
                 .PrintToConsole("Ingredients and Total Amounts");
-            
+
             Console.Write("\n"); // begin reflection part
             Console.ForegroundColor = ConsoleColor.Cyan;
             Console.WriteLine(Helper.PropToString(fridge));
-            fridge.Products.ForEach(prod =>
+            foreach (Product prod in fridge.Products)
             {
                 Console.WriteLine(Helper.PropToString(prod));
-            });
+            };
             Console.ResetColor();
             Console.Write("\n"); // end of reflection part
 
             Console.WriteLine("\n*** Type the name of the recipe you wish to prepare then press Enter.");
-            Recipe selectedRecipe = ctx.Set<Recipe>().FirstOrDefault(reci => reci.RecipeName.Contains(Console.ReadLine()));
+            string input = Console.ReadLine();
+            Recipe selectedRecipe = ctx.Set<Recipe>().FirstOrDefault(reci => reci.RecipeName.Contains(input, StringComparison.InvariantCultureIgnoreCase));
             if (selectedRecipe is not null)
             {
                 //selectedRecipe.Ingredients.PrintToConsole("Necessary for " + selectedRecipe.ToString());
@@ -76,6 +78,7 @@
                 .All(jointype => jointype.Quantity >= jointype.Amount);
 
             Console.WriteLine($"Can we make EVERYTHING now? " + (isEnough ? "Yes" : "No"));
+            ctx.Dispose();
         }
     }
 }

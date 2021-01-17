@@ -17,7 +17,7 @@ namespace Cooking.Tables
         public int Price { get; set; }
         public bool IsFavourite { get; set; }
 
-        public virtual ICollection<Ingredient> Ingredients { get; set; }
+        public virtual ICollection<Ingredient> Ingredients { get; private set; }
 
         public override string ToString()
         {

@@ -68,7 +68,7 @@ namespace Cooking
                 Console.WriteLine("The recipe could not be found.");
             }
 
-            var isEnough = joinedTables.ToList()
+            bool isEnough = joinedTables.ToList()
                 .GroupJoin(fridge.Products, ingr => ingr.ingredient.IngredientName, prod => prod.ProductName, (recipeIngredients, products) => new { recipeIngredients.ingredient, products })
                 .SelectMany(ingredientProducts => ingredientProducts.products.DefaultIfEmpty(new Product
                 {

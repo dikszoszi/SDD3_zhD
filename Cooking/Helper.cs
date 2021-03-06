@@ -11,10 +11,7 @@
         {
             if (obj is null) throw new ArgumentNullException(nameof(obj));
             string output = string.Empty;
-            foreach (PropertyInfo propInfo in
-                from pinfo in obj.GetType().GetProperties()
-                where pinfo.GetCustomAttributes(typeof(ImportantPropertyAttribute), false).Length > 0
-                select pinfo)
+            foreach (PropertyInfo propInfo in obj.GetType().GetProperties().Where(pinfo => pinfo.GetCustomAttributes(typeof(ImportantPropertyAttribute), false).Length > 0))
             {
                 output += propInfo.Name + " = " + propInfo.GetValue(obj) + " | " + propInfo.GetCustomAttribute<ImportantPropertyAttribute>().Reason;
             }

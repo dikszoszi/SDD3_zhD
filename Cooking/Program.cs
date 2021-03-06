@@ -13,7 +13,7 @@ namespace Cooking
     {
         private static void Main()
         {
-            RecipesDbContext ctx = new RecipesDbContext();
+            RecipesDbContext ctx = new ();
             Fridge fridge = Fridge.GetFridgeFromXml(@"Resources\fridge.xml");
             //fridge.Products.PrintToConsole("Stuff available in fridge");
 

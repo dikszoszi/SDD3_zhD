@@ -17,7 +17,7 @@
         {
             XElement fridge = XDocument.Load(xmlPath).Element("fridge");
             System.Collections.Generic.IEnumerable<XElement> productElements = fridge.Descendants("product");
-            System.Collections.Generic.List<Product> productList = new System.Collections.Generic.List<Product>();
+            System.Collections.Generic.List<Product> productList = new ();
             foreach (XElement productElement in productElements)
             {
                 productList.Add(new Product
